@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Survay.Services
 {
-    public class AnswerService:IAnswerService
+    public class AnswerService : IAnswerService
     {
         private readonly IAnswerRepository _answer;
         public AnswerService()
@@ -20,26 +20,35 @@ namespace Survay.Services
         }
         public bool AddAnswer(int questionId, string text, int answernum)
         {
-            return _answer.CreateAnswer(questionId, text, answernum);  
+            return _answer.CreateAnswer(questionId, text, answernum);
         }
-      
+
         public List<AnswerDto> GetANswerByQuestion(int questionId)
-        { 
+        {
             return _answer.GetAnswerByQuestion(questionId);
         }
 
-      
-        public int ShowAnswerId(int qId,int answernum)
+
+        public int ShowAnswerId(int qId, int answernum)
         {
-            var result =_answer.GetAnswerId(qId, answernum);
-            if (result!=null)
+            var result = _answer.GetAnswerId(qId, answernum);
+            if (result != null)
             {
-                return result;  
+                return result;
             }
             else
             {
                 throw new Exception("Answer Not Found");
             }
+        }
+
+        public List<int> GetAnswerId(List<int> list)
+        {
+            return _answer.GetAnswerId(list);
+        }
+        public bool DeleteAnswers(List<int> list)
+        {
+            return _answer.DeleteAnswers(list);
         }
     }
 }

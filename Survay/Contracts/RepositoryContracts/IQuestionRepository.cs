@@ -11,6 +11,8 @@ namespace Survay.Contracts.RepositoryContracts
     public interface IQuestionRepository
     {
         int CreateQuestion(string txt, int pollId, int questionNum);
+        bool DeleteQuestions(int pollId);
+        List<int> GetQuestionId(int pollId);
         List<QuestionDto> GetQuestions(int pollId);
     }
 }

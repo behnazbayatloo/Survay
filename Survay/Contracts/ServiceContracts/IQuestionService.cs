@@ -11,6 +11,8 @@ namespace Survay.Contracts.ServiceContracts
     public interface IQuestionService
     {
         int AddQuestion(string txt, int pollId, int questionNum);
+        bool DeleteQuestions(int pollId);
+        List<int> GetQuestionId(int pollId);
         List<QuestionDto> ShowQuestions(int pollid);
     }
 }

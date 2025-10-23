@@ -31,7 +31,7 @@ namespace Survay.Infrastructure.Repositories
             };
             _dbcontext.Add(newpoll);
             _dbcontext.SaveChanges();
-            return newpoll.AdminId;
+            return newpoll.Id;
 
         }
         public List<GetPollDto> GetAllPolls()
@@ -39,12 +39,25 @@ namespace Survay.Infrastructure.Repositories
             return _dbcontext.Polls.AsNoTracking().Include(p => p.CreatedBy).
                 Select(p=> new GetPollDto
                 {
-Id = p.Id,
-Title= p.Titel,
-CreatedBy=p.CreatedBy.UserName
+                          Id = p.Id,
+                          Title= p.Titel,
+                          CreatedBy=p.CreatedBy.UserName
                 }).ToList();
 
         }
+        public List<GetPollDto> GetAlPollsThatCreateByCurrentUser(int userid)
+        {
+            return _dbcontext.Polls.AsNoTracking().Where(p => p.AdminId==userid).
+                Select(p => new GetPollDto
+                {
+                    Id = p.Id,
+                    Title = p.Titel
+                  
+                }).ToList();
+
+        }
+
+
         public int GetQuestionCount(int pollId)
         {
             return _dbcontext.Polls.AsNoTracking().Where(p => p.Id == pollId)
@@ -52,5 +65,13 @@ CreatedBy=p.CreatedBy.UserName
                 .FirstOrDefault();
         }
 
+        public bool DletePoll(int pollId)
+        {
+            _dbcontext.Polls.Where(p => p.Id == pollId)
+                .ExecuteDelete();
+            return true;
+        }
+
+       
     }
 }

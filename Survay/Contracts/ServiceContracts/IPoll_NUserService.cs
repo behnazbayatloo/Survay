@@ -8,6 +8,8 @@ namespace Survay.Contracts.ServiceContracts
 {
     public interface IPoll_NUserService
     {
+        bool CreatePollForUser(int pollId, int UserId);
+        bool DeletePollForUser(int pollId);
         bool DoesUserVoted(int pollId, int userId);
     }
 }

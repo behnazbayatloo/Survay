@@ -13,7 +13,7 @@ namespace Survay.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Vote> builder)
         {
-            builder.Property(v=>v.IsVoteCorrect).HasDefaultValue(false);
+           
             
 
         }

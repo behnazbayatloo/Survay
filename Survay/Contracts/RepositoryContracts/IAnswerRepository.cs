@@ -11,8 +11,10 @@ namespace Survay.Contracts.RepositoryContracts
     {
    
         bool CreateAnswer(int questionId, string text, int answernum);
+        bool DeleteAnswers(List<int> list);
         List<AnswerDto> GetAnswerByQuestion(int questionId);
         int GetAnswerId(int qId, int answernum);
-       
+        List<int> GetAnswerId(List<int> list);
+        List<AnswerVoteDto> GetAnswerVoted(int questionId);
     }
 }

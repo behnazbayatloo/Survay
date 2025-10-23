@@ -27,5 +27,16 @@ namespace Survay.Services
         {
             return _question.GetQuestions(pollid);
         }
+
+        public List<int> GetQuestionId(int pollId)
+        {
+            return _question.GetQuestionId(pollId);
+        }
+
+
+        public bool DeleteQuestions(int pollId)
+        {
+            return _question.DeleteQuestions(pollId);
+        }
     }
 }

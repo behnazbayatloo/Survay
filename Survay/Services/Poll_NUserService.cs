@@ -21,5 +21,13 @@ namespace Survay.Services
         {
             return _pnuser.DoesNUserVotedThis(pollId, userId);
         }
+        public bool DeletePollForUser(int pollId)
+        {
+            return _pnuser.DeletePollForUser(pollId);
+        }
+        public bool CreatePollForUser(int pollId, int UserId)
+        {
+            return _pnuser.CreatePollForUser(pollId, UserId);
+        }
     }
 }

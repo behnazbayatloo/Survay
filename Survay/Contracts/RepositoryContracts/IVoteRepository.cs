@@ -9,5 +9,6 @@ namespace Survay.Contracts.RepositoryContracts
     public interface IVoteRepository
     {
         bool CreateVote(int userId, int answerId);
+        bool DeleteVote(List<int> answerIdlist);
     }
 }

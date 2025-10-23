@@ -15,7 +15,7 @@ namespace Survay.Infrastructure.Configurations
         {
             builder.Property(a => a.TextAnswer).HasMaxLength(200);
             builder.HasMany(a=>a.Votes).WithOne(v=>v.Answer).HasForeignKey(v=>v.AnswerId).OnDelete(DeleteBehavior.NoAction);
-        builder.Property(a=>a.IsCorrectAnswer).HasDefaultValue(false);
+       
         }
     }
 }

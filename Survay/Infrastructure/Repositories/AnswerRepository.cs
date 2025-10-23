@@ -6,6 +6,7 @@ using Survay.Infrastructure.AppDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +40,7 @@ namespace Survay.Infrastructure.Repositories
         public List<AnswerDto> GetAnswerByQuestion(int questionId)
         {
             return _dbcontext.Answers.Where(a=>a.QuestionId==questionId)
+               
                 .Select(a=> new AnswerDto
                 {
                     Id=a.Id,
@@ -46,12 +48,42 @@ namespace Survay.Infrastructure.Repositories
                     Text=a.TextAnswer
                 }).OrderBy(a=>a.Number).ToList();
         }
-
+        public List<AnswerVoteDto> GetAnswerVoted(int questionId)
+        {
+            return _dbcontext.Answers.Where(a => a.QuestionId == questionId)
+                .Include(a => a.Votes)
+                .Select(a => new AnswerVoteDto
+                {
+                    Number = a.AnswerNumber,
+                    Text = a.TextAnswer,
+                    Vote=a.Votes.Count
+                }).OrderBy(a => a.Number).ToList();
+        }
         public int GetAnswerId (int qId,int answernum)
         {
             return _dbcontext.Answers.Where(a => a.QuestionId == qId && a.AnswerNumber == answernum)
                 .Select(a => a.Id).FirstOrDefault();
 
+        }
+        public List<int> GetAnswerId(List<int> list)
+        {
+            List<int> idList = [];
+            foreach (var item in list)
+            {
+                List<int> ids = _dbcontext.Answers.Where(a => a.QuestionId == item)
+                      .Select(a => a.Id).ToList();
+                idList.AddRange(ids);
+            }
+            return idList;
+        }
+        public bool DeleteAnswers(List<int> list)
+        {
+            foreach (var item in list)
+            {
+                _dbcontext.Answers.Where(a => a.QuestionId == item)
+                    .ExecuteDelete();
+            }
+            return true;
         }
     }
 }

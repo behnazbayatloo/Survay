@@ -100,7 +100,7 @@ void AdminMenue()
                    new SelectionPrompt<string>()
                        .Title("[white]Select an option[/]")
                        .HighlightStyle("yellow")
-                       .AddChoices(new[] { "Add Poll","Show All Polls", "Logout" })
+                       .AddChoices(new[] { "Add Poll","Show All Polls","Delete Poll","Show Result", "Logout" })
                         );
 
         try
@@ -121,23 +121,32 @@ void AdminMenue()
                         int pollId = _poll.AddPoll(InMemoryDb.CurrentUser.Id, pollTitle, totalquestions);
                         for (int i = 1; i <= totalquestions; i++)
                         {
-                            Console.Write("Enter Question text: ");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.Write($"Enter Question{i} text: ");
+                            Console.ResetColor();
                             string Question = Console.ReadLine();
                             int qId = _question.AddQuestion(Question, pollId, i);
                             for (int j = 1; j <= 4; j++)
                             {
-                                Console.Write($"Enter Answer text {j }: ");
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Console.Write($"Enter Answer text {j}: ");
+                                Console.ResetColor();
                                 string answer = Console.ReadLine();
                                 bool addAnswer = _answer.AddAnswer(qId, answer, j);
                                 if (addAnswer)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Yellow;
                                     Console.WriteLine("Item Added");
+                                    Console.ResetColor();
+                                }
 
                             }
-                           
+
 
                         }
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Poll Created");
-
+                        Console.ResetColor();
                         Console.ReadKey();
 
 
@@ -149,7 +158,7 @@ void AdminMenue()
                         Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.WriteLine(FiggleFonts.Standard.Render("Show All Polls"));
                         Console.ResetColor();
-                        var list = _poll.ShowPolls();
+                        var list = _poll.GetAlPollsThatCreateByCurrentUser(InMemoryDb.CurrentUser.Id);
 
                         var table = new Table()
                         .Title("Polls")
@@ -172,6 +181,124 @@ void AdminMenue()
                         Console.ReadKey();
                     }
                     break;
+                case "Delete Poll":
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine(FiggleFonts.Standard.Render("Delete Poll"));
+                        Console.ResetColor();
+                        var list = _poll.GetAlPollsThatCreateByCurrentUser(InMemoryDb.CurrentUser.Id);
+
+                        var pollMap = new Dictionary<string, int>();
+
+                        foreach (var poll in list)
+                        {
+                            string display = $"{poll.Title}";
+                            pollMap[display] = poll.Id;
+                        }
+                        pollMap.Add("Exit", 0);
+                        var selectitem = AnsiConsole.Prompt(
+                  new SelectionPrompt<string>()
+                      .Title("[white]Select an option[/]")
+                      .HighlightStyle("red")
+                      .AddChoices(pollMap.Keys)
+                       );
+
+                        int pollId = pollMap[selectitem];
+
+                        switch (pollId)
+                        {
+                            case 0:
+                                break ;
+                            default:
+                                {
+                                    var questionId=_question.GetQuestionId(pollId);
+                                    var answerId = _answer.GetAnswerId(questionId);
+                                    var result1=   _vote.DeleteVote(answerId);
+                                    var result2= _answer.DeleteAnswers(questionId);
+                                    var result3= _question.DeleteQuestions(pollId);
+                                    var result4=  _pollNUser.DeletePollForUser(pollId);
+                                    var result5=  _poll.DeletePoll(pollId);
+                                    if (result1 && result2 && result3 &&  result4 && result5)
+                                    {
+                                        Console.WriteLine("Poll Deleted");
+                                        Console.ReadKey();
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Poll Dont Deleted\nsomthing is wrong");
+                                        Console.ReadKey();
+                                    }
+
+                                }
+                                break;
+                        }
+
+                        }
+                    break;
+                case "Show Result":
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.WriteLine(FiggleFonts.Standard.Render("Show Result"));
+                        Console.ResetColor();
+                        var list = _poll.GetAlPollsThatCreateByCurrentUser(InMemoryDb.CurrentUser.Id);
+
+                        var pollMap = new Dictionary<string, int>();
+
+                        foreach (var poll in list)
+                        {
+                            string display = $"{poll.Title}";
+                            pollMap[display] = poll.Id;
+                        }
+
+                        var selectitem = AnsiConsole.Prompt(
+                  new SelectionPrompt<string>()
+                      .Title("[white]Select an option[/]")
+                      .HighlightStyle("green")
+                      .AddChoices(pollMap.Keys)
+                       );
+
+                        int pollId = pollMap[selectitem];
+
+                        switch (pollId)
+                        {
+
+                            default:
+                                {
+                                    Console.WriteLine($"{selectitem}");
+                                    var results = _poll.ShowResults(pollId);
+                                    foreach (var result in results)
+                                    {
+                                        Console.WriteLine($"{result.QuestionNumber}.{result.QuestionText}");
+
+                                        var answers=result.Answers;
+                                        var table = new Table()
+                         .Title("Results")
+ .AddColumn("Number")
+ .AddColumn("Text")
+ .AddColumn("Votes")
+ .Border(TableBorder.Rounded)
+ .Centered();
+                                        foreach (var name in answers)
+                                        {
+                                            table.AddRow(name.Number.ToString(), name.Text.ToString(), name.Vote.ToString());
+                                            table.UseSafeBorder = true;
+                                            table.ShowRowSeparators = true;
+                                            table.RoundedBorder();
+
+
+                                        }
+
+                                        AnsiConsole.Write(table);
+                                        
+                                    }
+                                    Console.ReadKey();
+                                }
+                                break;
+                        }
+                    }
+                        break;
                 case "Logout":
                     InMemoryDb.CurrentUser = null;
                     break;
@@ -226,11 +353,12 @@ void NormalMenue()
                             string display = $"{poll.Title}";
                             pollMap[display] = poll.Id;
                         }
+                        pollMap.Add("Exit", 0);
                         
                         var selectitem = AnsiConsole.Prompt(
                   new SelectionPrompt<string>()
                       .Title("[white]Select an option[/]")
-                      .HighlightStyle("yellow")
+                      .HighlightStyle("green")
                       .AddChoices(pollMap.Keys)
                        );
 
@@ -238,9 +366,11 @@ void NormalMenue()
 
                         switch (polldId)
                         {
+                            case 0:
+                                break;
 
                             default:
-                                Console.WriteLine($"{selectitem[polldId]}");
+                                Console.WriteLine($"{selectitem}");
                                 bool doesVoted=_pollNUser.DoesUserVoted(polldId, InMemoryDb.CurrentUser.Id);
                                 if (!doesVoted)
                                 {
@@ -248,31 +378,57 @@ void NormalMenue()
                                     var questionList= _question.ShowQuestions(polldId);
                                     foreach (var question in questionList)
                                     {
-                                        Console.WriteLine($"{question.QuestionNumber}.{question.Text}.");
+                                        Console.WriteLine($"{question.QuestionNumber}.{question.Text}");
                                         var answerList= _answer.GetANswerByQuestion(question.Id);
-                                        foreach (var answer in answerList)
+                                        var answerMap=new Dictionary<string, int>();
+                                        foreach (var item in answerList)
                                         {
-                                            Console.WriteLine($"{answer.Number}.{question.Text}.");
-
+                                            string display = $"{item.Number}.{item.Text}";
+                                            answerMap[display] = item.Id;
                                         }
-                                        Console.Write("Choos an item: ");
-                                        int input = Int32.Parse(Console.ReadLine());
-                                        int answerId = _answer.ShowAnswerId(question.Id, input);
-                                      
+                                        var selectAnswer = AnsiConsole.Prompt(
+                  new SelectionPrompt<string>()
+                      .Title("[white]Select an option[/]")
+                      .HighlightStyle("green")
+                      .AddChoices(answerMap.Keys)
+                       );
+
+                                        int answerId = answerMap[selectAnswer];
+                                        
                                         var addvote = _vote.AddVote(InMemoryDb.CurrentUser.Id, answerId);
                                         if (addvote)
                                         {
-                                            Console.WriteLine("vote genarated");
+                                            
+                                                Console.ForegroundColor = ConsoleColor.Green;
+                                                Console.WriteLine("vote genarated");
+                                                Console.ResetColor();
+                                            
                                         }
+                                      
                                     }
-                                    Console.WriteLine("You voted to all questions.");
-                                    Console.ReadKey();
+                                    if (_pollNUser.CreatePollForUser(polldId, InMemoryDb.CurrentUser.Id))
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                       
+                                        Console.WriteLine("\nYou voted to all questions.");
+                                        Console.ResetColor();
+                                        Console.ReadKey();
+
+                                    }
+                                    else
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                        Console.WriteLine("\nOperation Faild.");
+                                        Console.ResetColor();
+                                        Console.ReadKey();
+                                    }
+                                   
 
                                 }
                                 else
                                 {
                                     Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine("you voted this poll");
+                                    Console.WriteLine("you voted this poll recently");
                                     Console.ResetColor();
                                     Console.ReadKey();
 

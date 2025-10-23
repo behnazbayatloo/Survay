@@ -21,5 +21,9 @@ namespace Survay.Services
         {
             return _vote.CreateVote(userId, answerId);
         }
+        public bool DeleteVote(List<int> answerIdlist)
+        {
+            return _vote.DeleteVote(answerIdlist);
+        }
     }
 }

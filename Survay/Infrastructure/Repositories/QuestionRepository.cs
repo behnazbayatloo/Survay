@@ -1,4 +1,5 @@
-﻿using Survay.Contracts.RepositoryContracts;
+﻿using Microsoft.EntityFrameworkCore;
+using Survay.Contracts.RepositoryContracts;
 using Survay.Domain.Dto;
 using Survay.Domain.Entities;
 using Survay.Infrastructure.AppDb;
@@ -40,6 +41,19 @@ namespace Survay.Infrastructure.Repositories
                     QuestionNumber=q.QuestionNumber
 
                 }).OrderBy(q=>q.QuestionNumber).ToList();
+        }
+
+        public List<int> GetQuestionId(int pollId)
+        {
+            return _dbcontext.Questions.Where(q=> q.PollId==pollId)
+                .Select(q=> q.Id
+                ).ToList();
+        }
+        public bool DeleteQuestions(int pollId)
+        {
+            _dbcontext.Questions.Where(q => q.PollId == pollId)
+                .ExecuteDelete();
+            return true;
         }
     }
 }

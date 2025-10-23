@@ -32,6 +32,14 @@ namespace Survay.Infrastructure.Repositories
             return true;
         }
 
-     
+     public bool DeleteVote(List<int> answerIdlist)
+        {
+            foreach ( var item in answerIdlist)
+            {
+                _dbcontext.Votes.Where(v => v.AnswerId == item)
+                    .ExecuteDelete();
+            }
+            return true;
+        }
     }
 }
