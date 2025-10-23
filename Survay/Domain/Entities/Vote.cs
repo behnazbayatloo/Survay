@@ -14,6 +14,6 @@ namespace Survay.Domain.Entities
         public NormalUser AnsweredBy { get; set; }
         public int NormalUserId { get; set; } 
         
-        public bool IsVoteCorrect { get; set; }
+       
     }
 }
