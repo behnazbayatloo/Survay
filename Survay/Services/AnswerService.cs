@@ -22,19 +22,13 @@ namespace Survay.Services
         {
             return _answer.CreateAnswer(questionId, text, answernum);  
         }
-        public void ChangeToCorrectOne(int qId, int answernum)
-        {
-           _answer.ChangeAnswerToCorrectOne(qId, answernum);    
-        }
+      
         public List<AnswerDto> GetANswerByQuestion(int questionId)
         { 
             return _answer.GetAnswerByQuestion(questionId);
         }
 
-        public bool IsCorrectAnswer(int qId,int answerId)
-        {
-            return _answer.IsAnswerCorrect(qId, answerId);
-        }
+      
         public int ShowAnswerId(int qId,int answernum)
         {
             var result =_answer.GetAnswerId(qId, answernum);

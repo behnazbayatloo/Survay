@@ -18,13 +18,13 @@ namespace Survay.Infrastructure.Repositories
             _dbcontext = new AppDbContext();
         }
 
-        public bool CreateVote(int userId,int answerId,bool isCorrect )
+        public bool CreateVote(int userId,int answerId )
         {
             Vote newVote = new Vote()
             {
                 NormalUserId=userId,
-                AnswerId=answerId,
-                IsVoteCorrect=isCorrect
+                AnswerId=answerId
+                
                 
             };
             _dbcontext.Votes.Add(newVote);

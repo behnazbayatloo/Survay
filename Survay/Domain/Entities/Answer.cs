@@ -14,7 +14,7 @@ namespace Survay.Domain.Entities
         
         public Question Question { get; set; }
         public int QuestionId { get; set; }
-        public bool IsCorrectAnswer { get; set; }
+      
         public List<Vote> Votes { get; set; }
 
 

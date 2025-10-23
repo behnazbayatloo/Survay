@@ -8,6 +8,6 @@ namespace Survay.Contracts.ServiceContracts
 {
     public interface IVoteService
     {
-        bool AddVote(int userId, int answerId, bool isCorrect);
+        bool AddVote(int userId, int answerId);
     }
 }

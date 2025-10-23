@@ -133,14 +133,7 @@ void AdminMenue()
                                     Console.WriteLine("Item Added");
 
                             }
-                            var answerList = _answer.GetANswerByQuestion(qId);
-                            foreach (var answer in answerList)
-                            {
-                                Console.WriteLine($"{answer.Number}. {answer.Text}");
-                            }
-                            Console.Write("Enter Correct Answer Number: ");
-                            int correctanswer = Int32.Parse(Console.ReadLine());
-                            _answer.ChangeToCorrectOne(qId, correctanswer);
+                           
 
                         }
                         Console.WriteLine("Poll Created");
@@ -265,8 +258,8 @@ void NormalMenue()
                                         Console.Write("Choos an item: ");
                                         int input = Int32.Parse(Console.ReadLine());
                                         int answerId = _answer.ShowAnswerId(question.Id, input);
-                                        bool isCorrect = _answer.IsCorrectAnswer(question.Id, answerId);
-                                        var addvote = _vote.AddVote(InMemoryDb.CurrentUser.Id, answerId, isCorrect);
+                                      
+                                        var addvote = _vote.AddVote(InMemoryDb.CurrentUser.Id, answerId);
                                         if (addvote)
                                         {
                                             Console.WriteLine("vote genarated");

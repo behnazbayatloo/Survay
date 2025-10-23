@@ -10,9 +10,9 @@ namespace Survay.Contracts.ServiceContracts
     public interface IAnswerService
     {
         bool AddAnswer(int questionId, string text, int answernum);
-        void ChangeToCorrectOne(int qId, int answernum);
+   
         List<AnswerDto> GetANswerByQuestion(int questionId);
-        bool IsCorrectAnswer(int qId, int answerId);
+       
         int ShowAnswerId(int qId, int answernum);
     }
 }

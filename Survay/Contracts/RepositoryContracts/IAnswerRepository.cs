@@ -9,10 +9,10 @@ namespace Survay.Contracts.RepositoryContracts
 {
     public interface IAnswerRepository
     {
-        void ChangeAnswerToCorrectOne(int qId, int answernum);
+   
         bool CreateAnswer(int questionId, string text, int answernum);
         List<AnswerDto> GetAnswerByQuestion(int questionId);
         int GetAnswerId(int qId, int answernum);
-        bool IsAnswerCorrect(int qId, int answerId);
+       
     }
 }

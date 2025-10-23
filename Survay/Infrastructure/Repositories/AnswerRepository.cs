@@ -33,16 +33,9 @@ namespace Survay.Infrastructure.Repositories
             return true;
         }
 
-        public void ChangeAnswerToCorrectOne(int qId, int answernum)
-        {
-            _dbcontext.Answers.Where(a => a.QuestionId == qId && a.AnswerNumber == answernum)
-                .ExecuteUpdate(set => set.SetProperty(a => a.IsCorrectAnswer, true));
-        }
+       
 
-        public bool IsAnswerCorrect(int qId,int answerId)
-        {
-            return _dbcontext.Answers.Any(a => a.QuestionId == qId && a.Id == answerId && a.IsCorrectAnswer == true);
-        }
+       
         public List<AnswerDto> GetAnswerByQuestion(int questionId)
         {
             return _dbcontext.Answers.Where(a=>a.QuestionId==questionId)

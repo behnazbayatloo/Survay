@@ -17,9 +17,9 @@ namespace Survay.Services
             _vote = new VoteRepository();
         }
 
-        public bool AddVote(int userId, int answerId, bool isCorrect)
+        public bool AddVote(int userId, int answerId)
         {
-            return _vote.CreateVote(userId, answerId, isCorrect);
+            return _vote.CreateVote(userId, answerId);
         }
     }
 }
